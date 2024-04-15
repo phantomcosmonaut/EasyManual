@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!-- Easy Manual -->
+<html lang="en" dir="ltr">
+
+<head>
+   <meta charset="utf-8">
+   <title>{{ title }}</title>
+   <link rel="stylesheet" href="style.css">
+   <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+   <nav class="sidebar">
+      <div class="text">
+         {{ siteName }}
+      </div>
+      <ul>
+         {% for category in categories %}
+         {% if category.manuals|length > 1 %}
+         <li>
+            <a href="#" class="menu-dropdown-btn {% if loop.index == 1 %}active{% endif %}">{{ category.name }}
+               <span class="fas fa-caret-down first"></span>
+            </a>
+            <ul class="menu-dropdown">
+               <li>This would display if the 'item' collection were empty</li>
+            </ul>
+         </li>
+         {% else %}
+         <li class="{% if loop.index == 1 %}active{% endif %}"><a href="#">{{ category.name }}</a></li>
+         {% endif %}
+         {% endfor %}
+      </ul>
+   </nav>
+   <div class="content">
+      {{ content }}
+   </div>
+   <script>
+      $('.sub-menu-btn').click(function () {
+         $('nav ul .sub-menu-show').toggleClass("show1");
+         $('nav ul .second').toggleClass("rotate");
+      });
+      $('nav ul li').click(function () {
+         $(this).addClass("active").siblings().removeClass("active");
+      });
+   </script>
+</body>
+
+</html>
