@@ -11,7 +11,7 @@ const defaultConfig = {
     homePage: 'Home',
     templateFile: './templates/base-template.njk'
 };
-const parseManual = async (inputDirectory, outputDirectory, filename) => {
+const parseManual = async (filename) => {
     let text = await fsPromises.readFile(filename, { encoding: 'utf8' });
     const fileParts = filename.split(path.sep);
     const fileWithExtension = fileParts[fileParts.length - 1];
@@ -26,8 +26,6 @@ const parseManual = async (inputDirectory, outputDirectory, filename) => {
         const image = match[1];
         const altName = image.split('.')[0];
         text = text.replace(match[0], `![${altName}](${image})`);
-        await fsPromises.copyFile(path.join(inputDirectory, image), path.join(outputDirectory, image));
-        console.log(`Copied image to output folder: ${image}`);
     }
     while ((match = Tags.link.exec(text)) != null) {
         const page = match[1];
@@ -55,7 +53,14 @@ const getPages = async (directory, outputDirectory) => {
             manuals = manuals.concat(recursiveResults);
         }
         else if (filename.endsWith(extension)) {
-            manuals.push(await parseManual(directory, outputDirectory, filename));
+            manuals.push(await parseManual(filename));
+        }
+        else {
+            // flatten all the extra files for easy reference within the geenrated html
+            const fileParts = filename.split(path.sep);
+            const fileWithExtension = fileParts[fileParts.length - 1];
+            const outputFile = path.join(outputDirectory, fileWithExtension);
+            await fsPromises.copyFile(filename, outputFile);
         }
     }
     ;

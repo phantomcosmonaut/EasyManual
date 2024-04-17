@@ -22,8 +22,8 @@ Allows you to easily reference another page from with the markdown by writing @ 
 
 ### Image Tag
 
-Same as Link but for images. Full filename must be specified for image e.g. @ + Image[MyImage.jpg].
+Same as Link but for images and the file extension must be used: @ + Image[MyImage.jpg]. Only use the file name, do not reference the full path.
 
-@Image[../images/GTO.png]
+@Image[GTO.png]
 
 For configuration: See @Link[Configuration]
