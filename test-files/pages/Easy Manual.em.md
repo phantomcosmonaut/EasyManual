@@ -13,17 +13,17 @@ Nested nav items are created by taking the sub folder the file is in.
 Easy manual expands on markdown slightly by adding **Tags**.  
 Supported **Tags** include:
 
-- Link
+- Page
 - Image
 
-### Link Tag
+### Page Tag
 
-Allows you to easily reference another page from with the markdown by writing @ + Link[MyPage].
+Allows you to easily reference another page from with the markdown by writing @ + Page[MyPage].
 
 ### Image Tag
 
-Same as Link but for images and the file extension must be used: @ + Image[MyImage.jpg]. Only use the file name, do not reference the full path.
+Same as Page but for images and the file extension must be used: @ + Image[MyImage.jpg]. Only use the file name, do not reference the full path.
 
 @Image[GTO.png]
 
-For configuration: See @Link[Configuration]
+For configuration: See @Page[Configuration]

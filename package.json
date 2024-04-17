@@ -8,6 +8,9 @@
     "start": "tsc && node index.js",
     "test": "tsc && node index.js test-files generated-html"
   },
+  "bin": {
+    "easy-manual": "./index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,6 +22,7 @@
     "@types/node": "^20.12.7",
     "@types/nunjucks": "^3.2.6",
     "@types/showdown": "^2.0.6",
+    "rimraf": "^5.0.5",
     "tsc": "^2.0.4",
     "typescript": "^5.4.5"
   }
