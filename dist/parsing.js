@@ -1,6 +1,7 @@
 import fsPromises from 'fs/promises';
 import fs from 'fs';
 import Tags from './RegexPatterns.js'; // TODO remove js extension
+import { toTitleCase } from './helpers.js';
 import showdown from 'showdown';
 import nunjucks from 'nunjucks';
 import path from 'path';
@@ -10,12 +11,16 @@ const defaultConfig = {
     homePage: 'Home',
     templateFile: './templates/base-template.njk'
 };
-const parseManual = async (inputDirectory, outputDirectory, filename, folderName) => {
+const parseManual = async (inputDirectory, outputDirectory, filename) => {
     let text = await fsPromises.readFile(filename, { encoding: 'utf8' });
     const fileParts = filename.split(path.sep);
     const fileWithExtension = fileParts[fileParts.length - 1];
-    const name = fileWithExtension.slice(0, fileWithExtension.length - 6); // removes '.em.md' file extension
-    const folder = folderName ?? name;
+    const name = toTitleCase(fileWithExtension.slice(0, fileWithExtension.length - 6)); // removes '.em.md' file extension
+    const groupMatch = Tags.group.exec(text);
+    const group = groupMatch?.[1] ?? name;
+    if (groupMatch != null) {
+        text = text.replace(groupMatch[0], '');
+    }
     let match = null;
     while ((match = Tags.image.exec(text)) != null) {
         const image = match[1];
@@ -31,15 +36,12 @@ const parseManual = async (inputDirectory, outputDirectory, filename, folderName
     const converter = new showdown.Converter();
     const html = converter.makeHtml(text);
     return {
-        folder,
+        group,
         name,
         html
     };
 };
-const getPages = async (directory, outputDirectory, subDirectory, recursionLevel = 0) => {
-    if (recursionLevel > 1) {
-        throw 'Pages folder structure should only contain at most one level of sub directory.';
-    }
+const getPages = async (directory, outputDirectory) => {
     if (!fs.existsSync(directory)) {
         throw `Directory not found: ${directory}.`;
     }
@@ -49,13 +51,11 @@ const getPages = async (directory, outputDirectory, subDirectory, recursionLevel
         const filename = path.join(directory, files[i]);
         const stats = fs.lstatSync(filename);
         if (stats.isDirectory()) {
-            const fileParts = filename.split(path.sep);
-            const folderName = fileParts[fileParts.length - 1];
-            const recursiveResults = await getPages(filename, outputDirectory, folderName, recursionLevel++);
+            const recursiveResults = await getPages(filename, outputDirectory);
             manuals = manuals.concat(recursiveResults);
         }
         else if (filename.endsWith(extension)) {
-            manuals.push(await parseManual(directory, outputDirectory, filename, subDirectory));
+            manuals.push(await parseManual(directory, outputDirectory, filename));
         }
     }
     ;
@@ -69,15 +69,15 @@ const getConfig = async (directory) => {
         ...config
     };
 };
-const generatePage = (manual, folders, config, outputDirectory) => {
+const generatePage = (manual, groups, config, outputDirectory) => {
     if (!config.templateFile) {
         throw 'Missing template file name.';
     }
     const page = nunjucks.render(config.templateFile, {
-        folders: folders.filter((folder) => folder[0].name !== config.homePage),
+        groups: groups.filter((group) => group[0].name !== config.homePage),
         content: manual.html,
         pageName: manual.name,
-        folderName: manual.folder,
+        groupName: manual.group,
         homePageName: config.homePage
     });
     if (!fs.existsSync(outputDirectory)) {
@@ -96,19 +96,19 @@ export const generatePages = async (directory, outputDirectory) => {
     const config = await getConfig(directory);
     const manuals = await getPages(directory, outputDirectory);
     console.log(`Found ${manuals.length} markdown files.`);
-    const folders = {};
+    const groups = {};
     for (let i = 0; i < manuals.length; i++) {
         const manual = manuals[i];
-        if (!folders[manual.folder]) {
-            folders[manual.folder] = [];
+        if (!groups[manual.group]) {
+            groups[manual.group] = [];
         }
-        folders[manual.folder].push(manual);
+        groups[manual.group].push(manual);
     }
     ;
-    const sortedFolders = Object.keys(folders)
+    const sortedGroups = Object.keys(groups)
         .sort(((a, b) => a.localeCompare(b)))
-        .map((key) => folders[key].sort((a, b) => a.name.localeCompare(b.name)));
-    sortedFolders
-        .flatMap((folder) => folder)
-        .forEach((manual) => generatePage(manual, sortedFolders, config, outputDirectory));
+        .map((key) => groups[key].sort((a, b) => a.name.localeCompare(b.name)));
+    sortedGroups
+        .flatMap((group) => group)
+        .forEach((manual) => generatePage(manual, sortedGroups, config, outputDirectory));
 };

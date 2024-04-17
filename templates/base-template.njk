@@ -18,18 +18,18 @@
          {{ homePageName }}
       </a>
       <ul class="list-unstyled ps-0 text-start">
-         {% for folder in folders %}
-         {% if folder|length > 1 %}
+         {% for group in groups %}
+         {% if group|length > 1 %}
          <li class="">
-            <button class="btn btn-lg btn-dark rounded-0 align-items-center {% if folder[0].folder != folderName %}collapsed{% endif %} text-light w-100 text-start d-flex" data-bs-toggle="collapse" data-bs-target="#{{ folder[0].folder }}-collapse" aria-expanded="false">
+            <button class="btn btn-lg btn-dark rounded-0 align-items-center {% if group[0].group != groupName %}collapsed{% endif %} text-light w-100 text-start d-flex" data-bs-toggle="collapse" data-bs-target="#{{ group[0].group }}-collapse" aria-expanded="false">
                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right fs-2 me-2 p-0" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
                </svg>
-               {{ folder[0].folder }}
+               {{ group[0].group }}
             </button>
-            <div class="collapse {% if folder[0].folder == folderName %}show{% endif %}" id="{{ folder[0].folder }}-collapse">
+            <div class="collapse {% if group[0].group == groupName %}show{% endif %}" id="{{ group[0].group }}-collapse">
                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-               {% for manual in folder %}
+               {% for manual in group %}
                <li class="{% if manual.name == pageName %}li-active{% endif %}">
                   <a href="{{ manual.name }}.html" class="btn btn-lg btn-dark rounded-0 text-white w-100 text-start ps-5">{{ manual.name }}</a>
                </li>
@@ -38,8 +38,8 @@
             </div>
          </li>
          {% else %}
-         <li class="{% if folder[0].folder == pageName %}li-active{% endif %}">
-            <a href="{{ folder[0].name }}.html" class="btn btn-lg btn-dark rounded-0 text-white w-100 text-start">{{ folder[0].name }}</a>
+         <li class="{% if group[0].group == pageName %}li-active{% endif %}">
+            <a href="{{ group[0].name }}.html" class="btn btn-lg btn-dark rounded-0 text-white w-100 text-start">{{ group[0].name }}</a>
          </li>
          {% endif %}
          {% endfor %}
