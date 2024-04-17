@@ -5,14 +5,21 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc && node index.js",
+    "test": "tsc && node index.js test-files generated-html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "nunjucks": "^3.2.4",
-    "pagedown": "^1.1.0"
+    "showdown": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/nunjucks": "^3.2.6",
+    "@types/showdown": "^2.0.6",
+    "tsc": "^2.0.4",
+    "typescript": "^5.4.5"
   }
 }

@@ -4,46 +4,49 @@
 
 <head>
    <meta charset="utf-8">
-   <title>{{ title }}</title>
-   <link rel="stylesheet" href="style.css">
+   <title>{{ homePageName }}</title>
+   <link rel="stylesheet" href="../css/main.css">
    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
 
 <body>
-   <nav class="sidebar">
-      <div class="text">
-         {{ siteName }}
-      </div>
-      <ul>
-         {% for category in categories %}
-         {% if category.manuals|length > 1 %}
-         <li>
-            <a href="#" class="menu-dropdown-btn {% if loop.index == 1 %}active{% endif %}">{{ category.name }}
-               <span class="fas fa-caret-down first"></span>
-            </a>
-            <ul class="menu-dropdown">
-               <li>This would display if the 'item' collection were empty</li>
-            </ul>
+   <nav class="text-white bg-dark sidebar">
+      <a href="{{ homePageName }}.html" class="text-white h3 border-bottom border-2 text-center p-3 m-0 mb-3">
+         {{ homePageName }}
+      </a>
+      <ul class="list-unstyled ps-0 text-start">
+         {% for folder in folders %}
+         {% if folder|length > 1 %}
+         <li class="">
+            <button class="btn btn-lg btn-dark rounded-0 align-items-center {% if folder[0].folder != folderName %}collapsed{% endif %} text-light w-100 text-start d-flex" data-bs-toggle="collapse" data-bs-target="#{{ folder[0].folder }}-collapse" aria-expanded="false">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right fs-2 me-2 p-0" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+               </svg>
+               {{ folder[0].folder }}
+            </button>
+            <div class="collapse {% if folder[0].folder == folderName %}show{% endif %}" id="{{ folder[0].folder }}-collapse">
+               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+               {% for manual in folder %}
+               <li class="{% if manual.name == pageName %}li-active{% endif %}">
+                  <a href="{{ manual.name }}.html" class="btn btn-lg btn-dark rounded-0 text-white w-100 text-start ps-5">{{ manual.name }}</a>
+               </li>
+               {% endfor %}
+               </ul>
+            </div>
          </li>
          {% else %}
-         <li class="{% if loop.index == 1 %}active{% endif %}"><a href="#">{{ category.name }}</a></li>
+         <li class="{% if folder[0].folder == pageName %}li-active{% endif %}">
+            <a href="{{ folder[0].name }}.html" class="btn btn-lg btn-dark rounded-0 text-white w-100 text-start">{{ folder[0].name }}</a>
+         </li>
          {% endif %}
          {% endfor %}
       </ul>
    </nav>
-   <div class="content">
-      {{ content }}
+   <div class="content py-4 px-5 bg-light">
+      {{ content|safe }}
    </div>
-   <script>
-      $('.sub-menu-btn').click(function () {
-         $('nav ul .sub-menu-show').toggleClass("show1");
-         $('nav ul .second').toggleClass("rotate");
-      });
-      $('nav ul li').click(function () {
-         $(this).addClass("active").siblings().removeClass("active");
-      });
-   </script>
 </body>
-
 </html>

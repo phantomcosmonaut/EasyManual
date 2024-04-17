@@ -1,0 +1,41 @@
+* {
+    margin: 0;
+}
+
+.sidebar {
+    position: fixed;
+    width: 260px;
+    height: 100%;
+    left: 0px;
+    overflow-y: auto;
+}
+
+.content {
+    margin-left: 260px;
+    min-height: 100vh;
+}
+
+.collapsed .bi-chevron-right {
+    transform: rotateX(0deg);
+}
+
+.bi-chevron-right {
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
+.li-active {
+    border-width: 0;
+    border-left-width: 4px;
+    border-color: aqua;
+    border-style: solid;
+}
+
+nav a {
+    text-decoration: none;
+    display: block;
+}
+
+p {
+    font-size: 18px;
+}
